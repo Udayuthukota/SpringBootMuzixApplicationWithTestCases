@@ -89,22 +89,7 @@ public class TrackServiceTest {
 //        Assert.assertEquals(updateTrack,track);
 //        verify(trackRepository,times(1)).save(track);
 //    }
-//
 
-
-//update test
-//
-   @Test
-    public void updateTrackTestSuccess () throws TrackNotFoundException {
-        when(trackRepository.findById(anyInt())).thenReturn(Optional.of(track));
-        when(trackRepository.save((Track) any())).thenReturn(track);
-        track.setComments("Enriquee songs");
-        Track updateTrack = trackService.updateComments(track.getComments(),track.getTrackId());
-        Assert.assertEquals(track, updateTrack);
-
-        //verify here verifies that userRepository save method is only called once
-        verify(trackRepository, times(1)).save(track);
-    }
 
     @Test
     public void updateTrackTestFailure() throws TrackAlreadyExistsException {

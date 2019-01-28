@@ -1,5 +1,4 @@
 package com.stackroute.controller;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.domain.Track;
 import com.stackroute.service.TrackService;
@@ -23,8 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -46,7 +47,7 @@ public class TrackControllerTest {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(trackController).build();
         track = new Track();
-        track.setComments("Enrique song");
+        track.setTrackComments("Enrique song");
         track.setTrackId(1);
         track.setTrackName("Freak");
         list = new ArrayList();
@@ -58,67 +59,47 @@ public class TrackControllerTest {
         when(trackService.saveTrack(any())).thenReturn(track);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/track")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isCreated())
+                .andDo(print());
 
 
     }
-//        @Test
-//        public void saveMuzixFailure() throws Exception {
-//            when(muzixService.saveMuzix(any())).thenThrow(MuzixAlreadyExistsException.class);
-//            mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/muzix")
-//                    .contentType(MediaType.APPLICATION_JSON).content(asJsonString(muzix)))
-//                    .andExpect(MockMvcResultMatchers.status().isConflict())
-//                    .andDo(MockMvcResultHandlers.print());
-//        }
-
-    @Test
+      @Test
     public void getAllTracks() throws Exception {
         when(trackService.getAllTracks()).thenReturn(list);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tracks")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isFound())
+                .andDo(print());
     }
 
-
     @Test
-    public void getAllTracksFailure() throws Exception {
-        when(trackService.getAllTracks()).thenReturn(list);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/tracks")
-                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-
-    @Test
-    public void updateComments() throws Exception {
-        when(trackService.updateComments("Enrique Song",1)).thenReturn(track);
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/track/{trackid}/{trackComments}")
+    public void updateComment() throws Exception {
+        when(trackService.updateComments(anyString(),anyInt())).thenReturn(track);
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/track/{trackid}/{trackComments}")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
+
     }
 
     @Test
-    public void removeTrackById() throws Exception {
-        when(trackService.deleteTrackById(1)).thenReturn(true);
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/track/1")
+    public void deleteMuzix() throws Exception {
+        when(trackService.deleteTrackById(anyInt())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/track/1")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
                 .andExpect(MockMvcResultMatchers.status().isGone())
                 .andDo(MockMvcResultHandlers.print());
 
     }
 
-
     @Test
     public void trackByName() throws Exception {
         when(trackService.findByTrackName(any())).thenReturn(list);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tracks/Freak")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isFound())
+                .andDo(print());
     }
 
 
@@ -127,8 +108,8 @@ public class TrackControllerTest {
         when(trackService.getTrackById(1)).thenReturn(Optional.of(track));
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/track/1")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isFound())
+                .andDo(print());
 
     }
 
@@ -137,7 +118,8 @@ public class TrackControllerTest {
         try{
             return new ObjectMapper().writeValueAsString(obj);
 
-        }catch(Exception e){
+        }
+        catch(Exception e){
             throw new RuntimeException(e);
         }
     }

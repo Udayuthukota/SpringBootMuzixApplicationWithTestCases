@@ -63,7 +63,7 @@ public class TrackServiceImpl implements TrackService {
             throw new TrackNotFoundException("Track to update not found");
         }
         Track updateTrack = trackRepository.findById(trackId).get();
-        updateTrack.setComments(trackComments);
+        updateTrack.setTrackComments(trackComments);
         return trackRepository.save(updateTrack);
     }
     /*

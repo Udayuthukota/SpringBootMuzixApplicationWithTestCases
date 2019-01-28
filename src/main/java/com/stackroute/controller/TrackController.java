@@ -10,11 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
-
-
 /*
  *This is controller class which create object of TrackService class and
  * consume the methods of it.
@@ -63,10 +60,14 @@ public class TrackController {
 
         return new ResponseEntity<Optional<Track>>(trackService.getTrackById(id), HttpStatus.FOUND);
     }
-    @ApiOperation(value = "Find Track By Name")
-    @GetMapping("tracks/{name}")
-    public ResponseEntity<?> findTrackByTrackName(@PathVariable String name) {
-        return new ResponseEntity<List<Track>>(trackService.findByTrackName(name), HttpStatus.FOUND);
+    /*
+     * This method help user to remove the track from database based on the input track Id.
+     */
+    @ApiOperation(value = "Delete Tracks By Id")
+    @DeleteMapping("track/{id}")
+    public ResponseEntity<?> removeTrack(@PathVariable int id) throws TrackNotFoundException {
+        trackService.deleteTrackById(id);
+        return new ResponseEntity<String>("removed", HttpStatus.GONE);
     }
     /*
      * This method help user to update track comment of a particular track Id.
@@ -77,12 +78,11 @@ public class TrackController {
         return new ResponseEntity<Track>(trackService.updateComments(comments,id), HttpStatus.OK);
     }
     /*
-     * This method help user to remove the track from database based on the input track Id.
+     * This method help user to find track by track Id.
      */
-    @ApiOperation(value = "Delete Tracks By Id")
-    @DeleteMapping("track/{id}")
-    public ResponseEntity<?> removeTrack(@PathVariable int id) throws TrackNotFoundException {
-        trackService.deleteTrackById(id);
-        return new ResponseEntity<String>("removed", HttpStatus.GONE);
+    @ApiOperation(value = "Find Track By Name")
+    @GetMapping("tracks/{name}")
+    public ResponseEntity<?> findTrackByTrackName(@PathVariable String name) {
+        return new ResponseEntity<List<Track>>(trackService.findByTrackName(name), HttpStatus.FOUND);
     }
 }

@@ -25,7 +25,7 @@ public class TrackRepositoryTest {
         track = new Track();
         track.setTrackId(3);
         track.setTrackName("rechipodam brother");
-        track.setComments("Dsp");
+        track.setTrackComments("Dsp");
     }
 
     @After
