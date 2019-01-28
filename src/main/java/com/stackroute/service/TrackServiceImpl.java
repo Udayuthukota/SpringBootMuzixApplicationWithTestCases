@@ -6,7 +6,6 @@ import com.stackroute.exception.TrackNotFoundException;
 import com.stackroute.repository.TrackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -59,22 +58,22 @@ public class TrackServiceImpl implements TrackService {
      * This method help user to update track comment of a particular track Id.
      */
     @Override
-    public Track updateComments(Track track) throws TrackNotFoundException {
-        if (!trackRepository.existsById(track.getTrackId())) {
-            throw new TrackNotFoundException("TrackNotFoundException");
-        } else {
-            Track savedTrack = trackRepository.save(track);
-            return savedTrack;
+    public Track updateComments(String trackComments,int trackId)throws TrackNotFoundException {
+        if(!trackRepository.existsById(trackId)){
+            throw new TrackNotFoundException("Track to update not found");
         }
+        Track updateTrack = trackRepository.findById(trackId).get();
+        updateTrack.setComments(trackComments);
+        return trackRepository.save(updateTrack);
     }
-
     /*
      * This method help user to remove the track from database based on the input track Id.
      */
     @Override
-    public void deleteTrackById(int id) throws TrackNotFoundException {
+    public boolean deleteTrackById(int id) throws TrackNotFoundException {
         if (trackRepository.existsById(id)) {
             trackRepository.deleteById(id);
+            return true;
         } else {
             throw new TrackNotFoundException("Track Not Found");
         }

@@ -72,9 +72,9 @@ public class TrackController {
      * This method help user to update track comment of a particular track Id.
      */
     @ApiOperation(value = "Update Comments")
-    @PutMapping("track")
-    public ResponseEntity<?> updateComments(@RequestBody Track track) throws TrackNotFoundException {
-        return new ResponseEntity<Track>(trackService.updateComments(track), HttpStatus.OK);
+    @PutMapping("track/{trackId}/{trackComments}")
+    public ResponseEntity<?> updateComments(@PathVariable("trackId") int id,@PathVariable("trackComments") String comments) throws TrackNotFoundException {
+        return new ResponseEntity<Track>(trackService.updateComments(comments,id), HttpStatus.OK);
     }
     /*
      * This method help user to remove the track from database based on the input track Id.
